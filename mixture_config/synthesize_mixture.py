@@ -25,7 +25,7 @@ SAMPLE_MULTIPLIER = 100
 #   because the avaiable token of The Pile is much larger than the token amount for training Chinchilla-Optimal 1B models (i.e., 25B tokens).
 #   However, if you want to train the large-scale model with all avaiable tokens, you can use less than 4 epochs also in the proxy
 #   model training.
-MAXIMUM_USAGE = 15
+MAXIMUM_USAGE = 4 # XXX
 
 # Assume that we have 1B (512,000 examples, and 2048 tokens per example) tokens
 #   for the proxy model training, the minimum sampling rate 2e-4 indicates that
@@ -36,18 +36,18 @@ MAXIMUM_USAGE = 15
 #   if you have 1B tokens for training the proxy models.
 MINIMUM = 2e-4
 
-def get_token_distribution():
+def get_token_distribution(): #XXX
     # The prior distribution of the token may be changed due to the tokenizer
     # If you want to get the token distribution following the TinyLlama codebase, you can use the 
     # script 
     train = {
-        "train_the_pile_arxiv": 0.113285273,
-        "train_the_pile_freelaw": 0.079608651,
-        "train_the_pile_nih_exporter": 0.003913491,
-        "train_the_pile_pubmed_central": 0.185375901,
-        "train_the_pile_wikipedia_en": 0.051081359,
-        "train_the_pile_dm_mathematics": 0.015962925,
-        "train_the_pile_github": 0.101750772,
+        "high-actual": 0.113285273,
+        "high-synthetic_distill": 0.079608651,
+        "high-synthetic_extract_knowledge": 0.003913491,
+        "high-synthetic_knowledge_list": 0.185375901,
+        "high-synthetic_wrap_medium": 0.051081359,
+        "high_synthetic_diverse_qa_pairs": 0.015962925,
+        "high_synthetic_extract_knowledge": 0.101750772,
         "train_the_pile_philpapers": 0.003707518,
         "train_the_pile_stackexchange": 0.066529351,
         "train_the_pile_enron_emails": 0.001750772,
@@ -228,24 +228,24 @@ def generate_config_from_prior(output_paths, prior_config):
             f.write(f"sample_multiplier: {SAMPLE_MULTIPLIER}\n")
             f.write(f"maximum_usage: {MAXIMUM_USAGE}\n")
             
+            # XXX
             # these are configurations for the model
             content = ""
-            content += "\n" + "model_name: tinyllama_1M"
-            # content += "\n" + "model_name: tinycoder_1M"
-            content += "\n" + "total_devices: 1"
-            content += "\n" + "num_of_devices: 1"
-            content += "\n" + "global_batch_size: 512"
+            content += "\n" + "model_name: tinyllama_50M"
+            content += "\n" + "total_devices: 8"
+            content += "\n" + "num_of_devices: 8"
+            content += "\n" + "global_batch_size: 128"
             content += "\n" + "micro_batch_size: 16"
             # 1001 instead of 1000 because wandb has the bug of not showing the last step
-            content += "\n" + "max_step: 1001"
+            content += "\n" + "max_step: 4001"
             
             # never save the model, just using the wandb log for regression fitting
-            content += "\n" + "save_step_interval: 2000"
-            content += "\n" + "eval_step_interval: 100"
+            content += "\n" + "save_step_interval: 1000"
+            content += "\n" + "eval_step_interval: 1000"
             
             # constant learning rate for the small model
-            content += "\n" + "learning_rate: 0.0004"
-            content += "\n" + "min_lr: 0.0004"
+            content += "\n" + "learning_rate: 0.003"
+            content += "\n" + "min_lr: 0.0003"
             # the warmup step is 100
             content += "\n" + "warmup_steps: 100"
             f.write(content)
@@ -269,7 +269,7 @@ def sort_and_deduplicate(data, threshold=1e-5):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_folder", type=str, default="config_1m")
-    parser.add_argument("--num_configs", type=int, default=512)
+    parser.add_argument("--num_configs", type=int, default=128)
     
     args = parser.parse_args()
     output_folder = args.output_folder

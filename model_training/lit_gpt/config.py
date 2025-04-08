@@ -15,7 +15,7 @@ class Config:
     block_size: int = 4096
     vocab_size: int = 50254
     padding_multiple: int = 512
-    padded_vocab_size: Optional[int] = None
+    fpadded_vocab_size: Optional[int] = None
     n_layer: int = 16
     n_head: int = 32
     n_embd: int = 4096
@@ -104,47 +104,13 @@ class Config:
 regmix_llama = [
     dict(
         org="RegMix Paper",
-        name="tinyllama_1M",
+        name="tinyllama_50M", #XXX
         block_size=2048,
-        vocab_size=50432,
-        padding_multiple=64,
-        n_layer=2,
+        vocab_size=131631,
+        padding_multiple=1,
+        n_layer=8,
         n_head=8,
-        n_embd=256,
-        rotary_percentage=1.0,
-        parallel_residual=False,
-        bias=False,
-        _norm_class="FusedRMSNorm",
-        norm_eps=1e-5,
-        _mlp_class="LLaMAMLP",
-        intermediate_size=512
-    ),
-    dict(
-        org="RegMix Paper",
-        name="tinycoder_1M",
-        block_size=2048,
-        vocab_size=49152,
-        padding_multiple=64,
-        n_layer=2,
-        n_head=8,
-        n_embd=256,
-        rotary_percentage=1.0,
-        parallel_residual=False,
-        bias=False,
-        _norm_class="FusedRMSNorm",
-        norm_eps=1e-5,
-        _mlp_class="LLaMAMLP",
-        intermediate_size=512
-    ),
-   dict(
-        org="RegMix Paper",
-        name="tinyllama_60M",
-        block_size=2048,
-        vocab_size=50432,
-        padding_multiple=64,
-        n_layer=10,
-        n_head=8,
-        n_embd=768,
+        n_embd=512,
         rotary_percentage=1.0,
         parallel_residual=False,
         bias=False,
@@ -152,23 +118,6 @@ regmix_llama = [
         norm_eps=1e-5,
         _mlp_class="LLaMAMLP",
         intermediate_size=1536
-    ),
-    dict(
-        org="RegMix Paper",
-        name="tinyllama_1_1b",
-        block_size=2048,
-        vocab_size=50432,
-        padding_multiple=64,
-        n_layer=22,
-        n_head=16,
-        n_embd=2048,
-        rotary_percentage=1.0,
-        parallel_residual=False,
-        bias=False,
-        _norm_class="FusedRMSNorm",
-        norm_eps=1e-5, #Llama 2 use 1e-5. Llama 1 use 1e-6
-        _mlp_class="LLaMAMLP",
-        intermediate_size=5632
     )
 ]
 configs = regmix_llama

@@ -189,6 +189,7 @@ def check_conversion_supported(lit_weights: Dict[str, torch.Tensor]) -> None:
 
 @torch.inference_mode()
 def convert_lit_checkpoint(*, checkpoint_name: str, inp_dir: Path, out_dir: Path, model_name: str) -> None:
+    os.makedirs(out_dir, exist_ok=True)
     config = Config.from_name(model_name)
     copy_fn = partial(copy_weights_llama, config)
 

@@ -130,5 +130,5 @@ if __name__ == "__main__":
 
     if accelerator.is_main_process:
         os.makedirs(args.output_dir, exist_ok=True)
-        with open(os.path.join(args.output_dir, 'results.txt'),'w') as f:
+        with open(os.path.join(args.output_dir, 'results.txt'),'a') as f:
             f.write(f'{args.name} -- {args.data_name} -- {str(report_loss)}')
